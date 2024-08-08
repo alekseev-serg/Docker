@@ -2,13 +2,13 @@ version: '3.7'
 
 services:
   nginx80:
-    build: ../nginx80/Dockerfile
+    build: ../nginx80/
     container_name: nginx80
     ports:
       - "80:80"
 
   nginx9090:
-    build: ../nginx9090/Dockerfile
+    build: ../nginx9090/
     container_name: nginx9090
     ports:
       - "9090:80"
