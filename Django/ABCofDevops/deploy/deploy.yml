@@ -1,0 +1,28 @@
+---
+- hosts: server
+  gather_facts: no
+  become: yes
+
+  vars:
+    dest_dir: /opt/app
+
+  tasks:
+    - name: Create app dir
+      file:
+        path: '{{ dest_dir }}'
+        state: directory
+
+    - name: Send file to remote
+      template: src="../docker-compose.yml" dest={{ dest_dir }}/docker-compose.yml
+        mode=0644
+
+    - name: Login to GitLab Repository
+      shell: docker login http://192.168.0.105:5005 -u root -p
+
+    - name: Start Containers
+      shell: cd {{ dest_dir }} && docker-compose pull && docker-compose up -d --force-recreate --remove-orphans
+      async: 360
+      poll: 10
+
+    - name: Remove old containers
+      shell: docker system prune -af
